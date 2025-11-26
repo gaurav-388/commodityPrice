@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commodity Price Prediction - ML</title>
+    
+    <!-- React and Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        #root {
+            min-height: 100vh;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 30px;
+        }
+
+        .header-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf, #ff6b6b);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 5s ease infinite;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #a0aec0;
+            font-weight: 300;
+        }
+
+        /* Main Card */
+        .main-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .card-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .card-header p {
+            color: #a0aec0;
+            font-size: 1rem;
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .form-group label i {
+            color: #00d4ff;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .form-group select:hover,
+        .form-group input:hover {
+            border-color: rgba(0, 212, 255, 0.5);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-group select option {
+            background: #1a1a2e;
+            color: #fff;
+            padding: 10px;
+        }
+
+        /* Model Selector */
+        .model-selector {
+            grid-column: 1 / -1;
+            margin-top: 10px;
+        }
+
+        .model-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .model-option {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .model-option input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .model-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .model-option input:checked + .model-card {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .model-card:hover {
+            border-color: rgba(0, 212, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .model-icon {
+            font-size: 2.5rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+        }
+
+        .model-option:nth-child(2) .model-icon {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        .model-info h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .model-info p {
+            font-size: 0.85rem;
+            color: #a0aec0;
+        }
+
+        /* Predict Button */
+        .predict-btn {
+            width: 100%;
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 200% 200%;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .predict-btn:hover:not(:disabled) {
+            animation: gradientShift 2s ease infinite;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.6);
+        }
+
+        .predict-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .predict-btn:disabled {
+            background: #4a5568;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Loading Spinner */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .loading-content {
+            text-align: center;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-content p {
+            color: #00d4ff;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        /* Results Section */
+        .results-section {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .results-header {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            border-radius: 20px 20px 0 0;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .results-header h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .results-header p {
+            opacity: 0.9;
+        }
+
+        .input-summary {
+            background: rgba(255, 255, 255, 0.95);
+            color: #1a1a2e;
+            padding: 20px 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .input-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-item strong {
+            color: #667eea;
+        }
+
+        .model-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Prediction Cards */
+        .predictions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 0 0 20px 20px;
+        }
+
+        .prediction-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .prediction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .prediction-card.today {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            transform: scale(1.05);
+        }
+
+        .prediction-card.today:hover {
+            transform: scale(1.08);
+        }
+
+        .prediction-card .day {
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            color: #667eea;
+        }
+
+        .prediction-card.today .day {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .prediction-card .date {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-bottom: 15px;
+        }
+
+        .prediction-card.today .date {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .prediction-card .price {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+
+        .prediction-card.today .price {
+            color: #fff;
+            font-size: 1.8rem;
+        }
+
+        .prediction-card .label {
+            font-size: 0.8rem;
+            color: #a0aec0;
+            font-weight: 500;
+        }
+
+        .prediction-card.today .label {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 10px;
+            color: #fff;
+        }
+
+        /* Error Message */
+        .error-message {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: #fff;
+            padding: 20px 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .main-card {
+                padding: 25px;
+            }
+
+            .model-options {
+                grid-template-columns: 1fr;
+            }
+
+            .predictions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .prediction-card.today {
+                grid-column: 1 / -1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <!-- Pass data from Flask to React -->
+    <script>
+        window.INITIAL_DATA = {
+            districts: {{ data.districts | tojson | safe }},
+            commodities: {{ data.commodities | tojson | safe }}
+        };
+    </script>
+
+    {% raw %}
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Main App Component
+        function App() {
+            const [formData, setFormData] = useState({
+                date: new Date().toISOString().split('T')[0],
+                district: '',
+                market: '',
+                commodity: '',
+                variety: '',
+                model: 'xgboost'
+            });
+
+            const [markets, setMarkets] = useState([]);
+            const [varieties, setVarieties] = useState([]);
+            const [loading, setLoading] = useState(false);
+            const [predictions, setPredictions] = useState(null);
+            const [error, setError] = useState('');
+            const [loadingMarkets, setLoadingMarkets] = useState(false);
+            const [loadingVarieties, setLoadingVarieties] = useState(false);
+
+            const districts = window.INITIAL_DATA.districts;
+            const commodities = window.INITIAL_DATA.commodities;
+
+            // Fetch markets when district changes
+            useEffect(() => {
+                if (formData.district) {
+                    setLoadingMarkets(true);
+                    setMarkets([]);
+                    setFormData(prev => ({ ...prev, market: '' }));
+                    
+                    fetch('/get_markets', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ district: formData.district })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setMarkets(data.markets || []);
+                        setLoadingMarkets(false);
+                    })
+                    .catch(err => {
+                        console.error('Error fetching markets:', err);
+                        setLoadingMarkets(false);
+                    });
+                }
+            }, [formData.district]);
+
+            // Fetch varieties when commodity changes
+            useEffect(() => {
+                if (formData.commodity) {
+                    setLoadingVarieties(true);
+                    setVarieties([]);
+                    setFormData(prev => ({ ...prev, variety: '' }));
+                    
+                    fetch('/get_varieties', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ commodity: formData.commodity })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setVarieties(data.varieties || []);
+                        setLoadingVarieties(false);
+                    })
+                    .catch(err => {
+                        console.error('Error fetching varieties:', err);
+                        setLoadingVarieties(false);
+                    });
+                }
+            }, [formData.commodity]);
+
+            const handleInputChange = (e) => {
+                const { name, value } = e.target;
+                setFormData(prev => ({ ...prev, [name]: value }));
+                setError('');
+            };
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setLoading(true);
+                setError('');
+                setPredictions(null);
+
+                try {
+                    const response = await fetch('/predict', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        setPredictions(data);
+                    } else {
+                        setError(data.error || 'Prediction failed. Please try again.');
+                    }
+                } catch (err) {
+                    setError('Connection error. Please check if the server is running.');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const isFormValid = formData.date && formData.district && formData.market && 
+                               formData.commodity && formData.variety;
+
+            return (
+                <div className="app-container">
+                    {/* Header */}
+                    <header className="header">
+                        <div className="header-icon">🌾</div>
+                        <h1>Commodity Price Prediction</h1>
+                        <p>ML-Powered Price Forecasting System for West Bengal Markets</p>
+                    </header>
+
+                    {/* Main Form Card */}
+                    <div className="main-card">
+                        <div className="card-header">
+                            <h2>📊 Enter Commodity Details</h2>
+                            <p>Get accurate price predictions for today and the next 6 days</p>
+                        </div>
+
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-grid">
+                                {/* Date */}
+                                <div className="form-group">
+                                    <label><i className="fas fa-calendar-alt"></i> Date</label>
+                                    <input 
+                                        type="date" 
+                                        name="date"
+                                        value={formData.date}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                </div>
+
+                                {/* District */}
+                                <div className="form-group">
+                                    <label><i className="fas fa-map-marker-alt"></i> District</label>
+                                    <select 
+                                        name="district"
+                                        value={formData.district}
+                                        onChange={handleInputChange}
+                                        required
+                                    >
+                                        <option value="">Select District</option>
+                                        {districts.map(d => (
+                                            <option key={d} value={d}>{d}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Market */}
+                                <div className="form-group">
+                                    <label><i className="fas fa-store"></i> Market</label>
+                                    <select 
+                                        name="market"
+                                        value={formData.market}
+                                        onChange={handleInputChange}
+                                        required
+                                        disabled={!formData.district || loadingMarkets}
+                                    >
+                                        <option value="">
+                                            {loadingMarkets ? 'Loading...' : 'Select Market'}
+                                        </option>
+                                        {markets.map(m => (
+                                            <option key={m} value={m}>{m}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Commodity */}
+                                <div className="form-group">
+                                    <label><i className="fas fa-seedling"></i> Commodity</label>
+                                    <select 
+                                        name="commodity"
+                                        value={formData.commodity}
+                                        onChange={handleInputChange}
+                                        required
+                                    >
+                                        <option value="">Select Commodity</option>
+                                        {commodities.map(c => (
+                                            <option key={c} value={c}>{c}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Variety */}
+                                <div className="form-group">
+                                    <label><i className="fas fa-tag"></i> Variety</label>
+                                    <select 
+                                        name="variety"
+                                        value={formData.variety}
+                                        onChange={handleInputChange}
+                                        required
+                                        disabled={!formData.commodity || loadingVarieties}
+                                    >
+                                        <option value="">
+                                            {loadingVarieties ? 'Loading...' : 'Select Variety'}
+                                        </option>
+                                        {varieties.map(v => (
+                                            <option key={v} value={v}>{v}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+
+                            {/* Model Selector */}
+                            <div className="model-selector">
+                                <label style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '15px', color: '#e2e8f0', fontWeight: '600'}}>
+                                    <i className="fas fa-robot" style={{color: '#00d4ff'}}></i> 
+                                    Select ML Model
+                                </label>
+                                <div className="model-options">
+                                    <label className="model-option">
+                                        <input 
+                                            type="radio" 
+                                            name="model" 
+                                            value="xgboost"
+                                            checked={formData.model === 'xgboost'}
+                                            onChange={handleInputChange}
+                                        />
+                                        <div className="model-card">
+                                            <div className="model-icon">🌲</div>
+                                            <div className="model-info">
+                                                <h4>XGBoost</h4>
+                                                <p>Gradient Boosting - Fast & Accurate</p>
+                                            </div>
+                                        </div>
+                                    </label>
+                                    <label className="model-option">
+                                        <input 
+                                            type="radio" 
+                                            name="model" 
+                                            value="neural_network"
+                                            checked={formData.model === 'neural_network'}
+                                            onChange={handleInputChange}
+                                        />
+                                        <div className="model-card">
+                                            <div className="model-icon">🧠</div>
+                                            <div className="model-info">
+                                                <h4>Neural Network</h4>
+                                                <p>Deep Learning with Backpropagation</p>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            {/* Submit Button */}
+                            <button 
+                                type="submit" 
+                                className="predict-btn"
+                                disabled={!isFormValid || loading}
+                                style={{marginTop: '30px'}}
+                            >
+                                <i className="fas fa-magic"></i>
+                                {loading ? 'Analyzing...' : 'Predict Prices'}
+                            </button>
+                        </form>
+
+                        {/* Error Message */}
+                        {error && (
+                            <div className="error-message">
+                                <i className="fas fa-exclamation-triangle"></i>
+                                {error}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Results Section */}
+                    {predictions && (
+                        <div className="main-card results-section">
+                            <div className="results-header">
+                                <h3>📈 Price Predictions</h3>
+                                <p>7-Day Forecast Results</p>
+                            </div>
+                            
+                            <div className="input-summary">
+                                <div className="input-item">
+                                    <i className="fas fa-map-marker-alt"></i>
+                                    <strong>District:</strong> {predictions.inputs.district}
+                                </div>
+                                <div className="input-item">
+                                    <i className="fas fa-store"></i>
+                                    <strong>Market:</strong> {predictions.inputs.market}
+                                </div>
+                                <div className="input-item">
+                                    <i className="fas fa-seedling"></i>
+                                    <strong>Commodity:</strong> {predictions.inputs.commodity}
+                                </div>
+                                <div className="input-item">
+                                    <i className="fas fa-tag"></i>
+                                    <strong>Variety:</strong> {predictions.inputs.variety}
+                                </div>
+                                <div className="input-item">
+                                    <span className="model-badge">
+                                        {predictions.inputs.model === 'neural_network' ? '🧠 Neural Network' : '🌲 XGBoost'}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="predictions-grid">
+                                {predictions.predictions.map((pred, index) => (
+                                    <div 
+                                        key={pred.date} 
+                                        className={`prediction-card ${index === 0 ? 'today' : ''}`}
+                                    >
+                                        <div className="day">{pred.day_name}</div>
+                                        <div className="date">{pred.date}</div>
+                                        <div className="price">₹{Math.round(pred.price).toLocaleString()}/quintal</div>
+                                        <div className="label">
+                                            {index === 0 ? 'TODAY' : `Day ${index + 1}`}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Footer */}
+                    <footer className="footer">
+                        <p>
+                            Built with ❤️ using <strong>XGBoost</strong> & <strong>Neural Networks</strong> | 
+                            Powered by <strong>React</strong> & <strong>Flask</strong>
+                        </p>
+                    </footer>
+
+                    {/* Loading Overlay */}
+                    {loading && (
+                        <div className="loading-overlay">
+                            <div className="loading-content">
+                                <div className="spinner"></div>
+                                <p>Analyzing market data...</p>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    {% endraw %}
+</body>
+</html>

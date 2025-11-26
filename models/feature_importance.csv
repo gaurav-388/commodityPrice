@@ -1,0 +1,24 @@
+feature,importance
+commodity_encoded,0.22412796
+CPI(base year2012=100),0.16918401
+MSP(per quintol),0.14865866
+is_monsoon,0.11888405
+quarter,0.092823856
+Food_Subsidy(in thousand crores),0.047317818
+"Per_Capita_Income(per capita nsdp,rs)",0.046847478
+year,0.04126015
+district_encoded,0.022737551
+week_of_year,0.018973583
+Area(million ha),0.014432754
+is_summer,0.012298873
+day_of_year,0.00985975
+Production(million tonnes),0.0067280675
+month,0.0065752007
+market_encoded,0.0058108997
+Fertilizer_Consumption(kg/ha),0.0037576654
+temperature(celcius),0.003299471
+Yield(kg/ha),0.0031031133
+is_harvest,0.0017201664
+rainfall(mm),0.00062744186
+day_of_week,0.00049245404
+day,0.00047902687

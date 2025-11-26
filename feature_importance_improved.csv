@@ -1,0 +1,37 @@
+feature,importance
+is_winter,0.20597348
+Import(Million MT),0.14199455
+commodity_name_encoded,0.09666613
+subsidy_per_capita,0.09133173
+market_avg_price,0.07956355
+MSP(per quintol),0.07504759
+Food_Subsidy(in thousand crores),0.05828852
+yield_per_area,0.02829548
+Export(Million MT),0.026554417
+variety_encoded,0.02399998
+variety_avg_price,0.022175321
+year,0.020143714
+"Per_Capita_Income(per capita nsdp,rs)",0.01996834
+Area(million ha),0.015887417
+Elec_Agri_Share(%),0.012346365
+week_of_year,0.011179126
+Production(million tonnes),0.009852084
+day_of_year,0.009332232
+cpi_msp_ratio,0.008515548
+CPI(base year2012=100),0.0077515654
+quarter,0.005548454
+Fertilizer_Consumption(kg/ha),0.0052499305
+district_encoded,0.0046655773
+is_summer,0.0038975694
+Yield(kg/ha),0.0031866527
+month,0.0031768035
+temp_rainfall_interaction,0.00221757
+temperature(celcius),0.0020252597
+market_name_encoded,0.0019527518
+is_monsoon,0.0011045813
+rainfall(mm),0.0007107175
+production_per_area,0.0006835101
+day,0.00041610675
+day_of_week,0.00029733364
+commodity_avg_price,0.0
+state_name_encoded,0.0

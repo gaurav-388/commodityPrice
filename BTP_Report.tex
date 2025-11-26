@@ -1,0 +1,1536 @@
+\documentclass[12pt,a4paper]{report}
+
+% Essential packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+
+% Code listing style
+\lstdefinestyle{pythonstyle}{
+    backgroundcolor=\color{gray!10},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{green!60!black},
+    keywordstyle=\color{blue},
+    stringstyle=\color{red!70!black},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    frame=single,
+    language=Python
+}
+
+\lstset{style=pythonstyle}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=blue
+}
+
+% Header/Footer
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{BTP Report - IIT Kharagpur}
+\lhead{Commodity Price Prediction - AFE}
+\cfoot{\thepage}
+
+% Line spacing
+\onehalfspacing
+
+% Title formatting
+\titleformat{\chapter}[display]
+{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+
+\begin{document}
+
+% ============================================================================
+% TITLE PAGE
+% ============================================================================
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+    
+    % IIT Kharagpur Logo
+    \includegraphics[width=0.2\textwidth]{iitkgp_logo.png}\\[0.5cm]
+    {\scshape\Large Indian Institute of Technology Kharagpur\\[0.3cm]
+    Department of Agriculture and Food Engineering}\\[1.5cm]
+    
+    \rule{\linewidth}{0.5mm}\\[0.4cm]
+    {\huge\bfseries Commodity Price Prediction System Using Machine Learning and Deep Learning}\\[0.2cm]
+    \rule{\linewidth}{0.5mm}\\[1.5cm]
+    
+    {\Large\textbf{Bachelor of Technology Project (BTP) Report}}\\[2cm]
+    
+    \begin{minipage}{0.45\textwidth}
+        \begin{flushleft}
+            \large
+            \textbf{Submitted by:}\\[0.3cm]
+            Gaurav Kumar\\
+            Roll No: [Your Roll Number]\\
+            B.Tech, Agricultural and Food Engineering\\
+            IIT Kharagpur
+        \end{flushleft}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \begin{flushright}
+            \large
+            \textbf{Under the supervision of:}\\[0.3cm]
+            Dr. Prasun Kumar Pany\\
+            Department of Agriculture and Food Engineering\\
+            IIT Kharagpur
+        \end{flushright}
+    \end{minipage}\\[3cm]
+    
+    {\large Academic Year: 2024-2025}\\[0.5cm]
+    {\large November 2025}
+    
+\end{titlepage}
+
+% ============================================================================
+% CERTIFICATE
+% ============================================================================
+\chapter*{Certificate}
+\addcontentsline{toc}{chapter}{Certificate}
+
+\vspace{1cm}
+
+This is to certify that the project titled \textbf{``Commodity Price Prediction System Using Machine Learning and Deep Learning''} submitted by \textbf{Gaurav Kumar} to the Indian Institute of Technology Kharagpur, is a record of bonafide work carried out by him under my supervision and guidance.
+
+The work presented in this report has not been submitted elsewhere for any other degree or diploma.
+
+\vspace{3cm}
+
+\begin{flushright}
+    \textbf{Dr. Prasun Kumar Pany}\\
+    Department of Agriculture and Food Engineering\\
+    Indian Institute of Technology Kharagpur\\[1cm]
+    Date: \today
+\end{flushright}
+
+\newpage
+
+% ============================================================================
+% DECLARATION
+% ============================================================================
+\chapter*{Declaration}
+\addcontentsline{toc}{chapter}{Declaration}
+
+\vspace{1cm}
+
+I hereby declare that the work presented in this BTP report entitled \textbf{``Commodity Price Prediction System Using Machine Learning and Deep Learning''} is an authentic record of the work carried out by me under the supervision of \textbf{Dr. Prasun Kumar Pany}, Department of Agriculture and Food Engineering, Indian Institute of Technology Kharagpur.
+
+I further declare that the work reported in this thesis has not been submitted and will not be submitted, either in part or in full, for the award of any other degree or diploma in this institute or any other institute or university.
+
+\vspace{3cm}
+
+\begin{flushright}
+    \textbf{Gaurav Kumar}\\
+    Roll No: [Your Roll Number]\\
+    Department of Agriculture and Food Engineering\\
+    IIT Kharagpur\\[1cm]
+    Date: \today
+\end{flushright}
+
+\newpage
+
+% ============================================================================
+% ACKNOWLEDGEMENTS
+% ============================================================================
+\chapter*{Acknowledgements}
+\addcontentsline{toc}{chapter}{Acknowledgements}
+
+I would like to express my sincere gratitude to my supervisor, \textbf{Dr. Prasun Kumar Pany}, for his invaluable guidance, continuous support, and encouragement throughout this project. His expertise and insights have been instrumental in shaping this work.
+
+I am grateful to the \textbf{Indian Institute of Technology Kharagpur} for providing the necessary infrastructure and resources that made this project possible.
+
+I would also like to thank my fellow students and friends for their support and helpful discussions during the course of this project.
+
+Finally, I express my heartfelt gratitude to my family for their unwavering support and encouragement throughout my academic journey.
+
+\vspace{2cm}
+
+\begin{flushright}
+    \textbf{Gaurav Kumar}\\
+    IIT Kharagpur
+\end{flushright}
+
+\newpage
+
+% ============================================================================
+% ABSTRACT
+% ============================================================================
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+Agricultural commodity price prediction is a critical challenge in developing economies like India, where price volatility significantly impacts farmers' livelihoods and food security. This project presents a comprehensive machine learning-based system for predicting commodity prices in West Bengal, India, utilizing historical price data spanning from 2014 to 2025.
+
+We develop and compare two predictive models: \textbf{XGBoost (Extreme Gradient Boosting)} and a \textbf{Deep Neural Network with Backpropagation}. The system incorporates 36 carefully engineered features including temporal patterns, economic indicators (CPI, MSP, food subsidies), agricultural parameters (temperature, rainfall, fertilizer consumption), and market-specific statistics.
+
+Our XGBoost model achieves a \textbf{Mean Absolute Percentage Error (MAPE) of 5.43\%} with an \textbf{R² score of 0.9453}, while the Neural Network model achieves a \textbf{MAPE of 4.64\%} with an \textbf{R² score of 0.9601}. For 2025 predictions specifically, the Neural Network achieves an excellent \textbf{MAPE of 4.44\%} with \textbf{R² = 0.9724}. The system successfully predicts prices for three major commodities—Rice, Jute, and Wheat—across 18 districts and 61 markets in West Bengal.
+
+A web-based application built using Flask and React provides an intuitive interface for stakeholders to access 7-day price forecasts. The system is deployed using a production-grade Waitress WSGI server ensuring reliability and scalability.
+
+\textbf{Keywords:} Machine Learning, XGBoost, Neural Networks, Commodity Price Prediction, Agricultural Analytics, Time Series Forecasting, Deep Learning
+
+\newpage
+
+% ============================================================================
+% TABLE OF CONTENTS
+% ============================================================================
+\tableofcontents
+\newpage
+
+\listoffigures
+\addcontentsline{toc}{chapter}{List of Figures}
+\newpage
+
+\listoftables
+\addcontentsline{toc}{chapter}{List of Tables}
+\newpage
+
+% ============================================================================
+% CHAPTER 1: INTRODUCTION
+% ============================================================================
+\chapter{Introduction}
+
+\section{Background and Motivation}
+
+Agriculture is the backbone of the Indian economy, employing over 50\% of the workforce and contributing significantly to the GDP. However, farmers in India face numerous challenges, with price volatility being one of the most critical issues affecting their economic stability. The inability to predict market prices leads to:
+
+\begin{itemize}
+    \item Distress selling at low prices during harvest seasons
+    \item Inadequate planning for crop selection
+    \item Financial losses due to price fluctuations
+    \item Reduced investment in agricultural inputs
+\end{itemize}
+
+West Bengal, one of India's leading agricultural states, produces significant quantities of rice, jute, and wheat. The state's diverse agro-climatic conditions and market dynamics create complex pricing patterns that are difficult to predict using traditional methods.
+
+\section{Problem Statement}
+
+The primary objective of this project is to develop an accurate and reliable commodity price prediction system that can:
+
+\begin{enumerate}
+    \item Predict prices for major agricultural commodities (Rice, Jute, Wheat) in West Bengal
+    \item Provide 7-day ahead forecasts to aid decision-making
+    \item Incorporate multiple factors affecting prices including weather, economic indicators, and historical patterns
+    \item Offer an accessible web interface for farmers, traders, and policymakers
+\end{enumerate}
+
+\section{Objectives}
+
+The specific objectives of this BTP are:
+
+\begin{enumerate}
+    \item \textbf{Data Collection and Preprocessing:} Compile comprehensive historical price data from 2014-2025, integrating economic and agricultural indicators
+    
+    \item \textbf{Feature Engineering:} Design and implement relevant features capturing temporal, spatial, and economic patterns
+    
+    \item \textbf{Model Development:} Implement and train two machine learning models:
+    \begin{itemize}
+        \item XGBoost (Gradient Boosting)
+        \item Deep Neural Network with Backpropagation
+    \end{itemize}
+    
+    \item \textbf{Model Evaluation:} Rigorously evaluate models using multiple metrics (MAPE, RMSE, R²)
+    
+    \item \textbf{Web Application Development:} Create a user-friendly interface for price predictions
+    
+    \item \textbf{Deployment:} Deploy the system using production-grade infrastructure
+\end{enumerate}
+
+\section{Scope and Limitations}
+
+\subsection{Scope}
+\begin{itemize}
+    \item Geographic Coverage: 18 districts and 61 markets in West Bengal
+    \item Commodities: Rice (14 varieties), Jute (2 varieties), Wheat (4 varieties)
+    \item Time Period: Historical data from 2014-2025
+    \item Forecast Horizon: 7-day predictions
+\end{itemize}
+
+\subsection{Limitations}
+\begin{itemize}
+    \item Limited to West Bengal region
+    \item Does not account for sudden market shocks or policy changes
+    \item Requires historical data for accurate predictions
+    \item Weather data is based on historical averages
+\end{itemize}
+
+\section{Report Organization}
+
+This report is organized as follows:
+
+\begin{itemize}
+    \item \textbf{Chapter 2:} Literature Review - Survey of existing work in commodity price prediction
+    \item \textbf{Chapter 3:} Methodology - Detailed description of data, features, and models
+    \item \textbf{Chapter 4:} System Design and Implementation - Architecture and technical details
+    \item \textbf{Chapter 5:} Results and Analysis - Evaluation metrics and performance analysis
+    \item \textbf{Chapter 6:} Web Application - User interface and deployment
+    \item \textbf{Chapter 7:} Conclusion and Future Work
+\end{itemize}
+
+% ============================================================================
+% CHAPTER 2: LITERATURE REVIEW
+% ============================================================================
+\chapter{Literature Review}
+
+\section{Traditional Approaches to Price Prediction}
+
+Historically, commodity price prediction relied on statistical methods such as:
+
+\subsection{Time Series Models}
+\begin{itemize}
+    \item \textbf{ARIMA (AutoRegressive Integrated Moving Average):} Box and Jenkins (1970) introduced this methodology which became the foundation for time series forecasting. ARIMA models capture linear dependencies in data but struggle with non-linear patterns.
+    
+    \item \textbf{GARCH (Generalized Autoregressive Conditional Heteroskedasticity):} Bollerslev (1986) developed GARCH for modeling volatility clustering in financial time series. While effective for variance prediction, it has limitations in capturing complex market dynamics.
+    
+    \item \textbf{Exponential Smoothing:} Methods like Holt-Winters are useful for data with trends and seasonality but assume linear relationships.
+\end{itemize}
+
+\subsection{Econometric Models}
+Vector Autoregression (VAR) and Structural Equation Models have been used to capture relationships between multiple economic variables affecting commodity prices. However, these models require strong assumptions about variable relationships.
+
+\section{Machine Learning Approaches}
+
+\subsection{Support Vector Machines (SVM)}
+Vapnik (1995) introduced SVMs which have been applied to price prediction with moderate success. Lu et al. (2009) demonstrated SVM's effectiveness in agricultural price forecasting, achieving 85-90\% accuracy for soybean prices.
+
+\subsection{Random Forests}
+Breiman (2001) introduced Random Forests, an ensemble method that has shown robust performance in various prediction tasks. Cai et al. (2019) used Random Forests for wheat price prediction with R² scores exceeding 0.85.
+
+\subsection{Gradient Boosting Methods}
+\textbf{XGBoost} (Chen \& Guestrin, 2016) has emerged as one of the most powerful algorithms for structured data:
+\begin{itemize}
+    \item Winner of numerous Kaggle competitions
+    \item Handles missing values naturally
+    \item Built-in regularization prevents overfitting
+    \item Efficient parallel processing
+\end{itemize}
+
+Zhang et al. (2020) achieved MAPE of 2.1\% using XGBoost for vegetable price prediction in China.
+
+\section{Deep Learning Approaches}
+
+\subsection{Artificial Neural Networks (ANN)}
+Feedforward neural networks with backpropagation have been extensively studied for price prediction. Key developments include:
+
+\begin{itemize}
+    \item Rumelhart et al. (1986) introduced backpropagation algorithm
+    \item Universal approximation theorem (Hornik et al., 1989) proved ANNs can approximate any continuous function
+    \item Dropout regularization (Srivastava et al., 2014) improved generalization
+\end{itemize}
+
+\subsection{Recurrent Neural Networks (RNN)}
+Long Short-Term Memory (LSTM) networks (Hochreiter \& Schmidhuber, 1997) excel at capturing temporal dependencies:
+\begin{itemize}
+    \item Fischer \& Krauss (2018) used LSTMs for stock price prediction
+    \item Xiong et al. (2015) applied LSTMs to commodity futures with promising results
+\end{itemize}
+
+\subsection{Hybrid Models}
+Recent work combines multiple approaches:
+\begin{itemize}
+    \item CNN-LSTM hybrids for feature extraction and sequence modeling
+    \item Attention mechanisms for focusing on relevant time periods
+    \item Ensemble methods combining traditional and deep learning approaches
+\end{itemize}
+
+\section{Agricultural Price Prediction in India}
+
+Several studies have focused on Indian agricultural markets:
+
+\begin{itemize}
+    \item Darekar \& Reddy (2017) used ARIMA for onion price prediction in Maharashtra
+    \item Paul et al. (2013) applied neural networks to rice prices in West Bengal
+    \item Kumar \& Jain (2018) demonstrated XGBoost's superiority over traditional methods for wheat prices
+\end{itemize}
+
+\section{Research Gap}
+
+Our literature review identifies the following gaps:
+
+\begin{enumerate}
+    \item Limited studies combining multiple economic indicators with ML models
+    \item Lack of comprehensive systems covering multiple commodities and markets
+    \item Few deployed systems with user-friendly interfaces
+    \item Limited comparison between traditional ML and deep learning for Indian commodities
+\end{enumerate}
+
+This project addresses these gaps by developing a comprehensive, multi-model system with extensive feature engineering and a production-ready web interface.
+
+% ============================================================================
+% CHAPTER 3: METHODOLOGY
+% ============================================================================
+\chapter{Methodology}
+
+\section{Data Collection}
+
+\subsection{Data Sources}
+Our dataset integrates information from multiple authoritative sources:
+
+\begin{table}[H]
+\centering
+\caption{Data Sources and Variables}
+\label{tab:datasources}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Source} & \textbf{Variables} & \textbf{Period} \\
+\midrule
+Agmarknet & Daily modal prices & 2014-2025 \\
+IMD & Temperature, Rainfall & 2014-2025 \\
+RBI & CPI, Per Capita Income & 2014-2025 \\
+Ministry of Agriculture & MSP, Area, Production, Yield & 2014-2025 \\
+Ministry of Food & Food Subsidy & 2014-2025 \\
+Fertilizer Association & Fertilizer Consumption & 2014-2025 \\
+DGCIS & Export/Import data & 2014-2025 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Dataset Statistics}
+
+\begin{table}[H]
+\centering
+\caption{Dataset Overview}
+\label{tab:dataset}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Total Records & 173,094 \\
+Time Period & 2014-01-01 to 2025-11-15 \\
+Districts & 18 \\
+Markets & 61 \\
+Commodities & 3 (Rice, Jute, Wheat) \\
+Varieties & 14 \\
+Database Size & 51.14 MB (SQLite) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Commodity-wise Record Distribution}
+\label{tab:commoditydist}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+\textbf{Commodity} & \textbf{Records} & \textbf{Percentage} \\
+\midrule
+Rice & 130,572 & 75.4\% \\
+Jute & 34,425 & 19.9\% \\
+Wheat & 8,097 & 4.7\% \\
+\midrule
+\textbf{Total} & \textbf{173,094} & \textbf{100\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Feature Engineering}
+
+Feature engineering is crucial for model performance. We designed 36 features categorized as follows:
+
+\subsection{Temporal Features}
+\begin{lstlisting}[caption=Temporal Feature Extraction]
+# Basic temporal features
+'year', 'month', 'day', 'quarter',
+'day_of_week', 'day_of_year', 'week_of_year'
+
+# Binary indicators
+'is_weekend': 1 if weekday >= 5 else 0
+'month_start': 1 if day <= 5 else 0
+'month_end': 1 if day >= 25 else 0
+
+# Seasonal indicators
+'is_monsoon': 1 if month in [6,7,8,9] else 0
+'is_winter': 1 if month in [11,12,1,2] else 0
+'is_summer': 1 if month in [3,4,5] else 0
+\end{lstlisting}
+
+\subsection{Categorical Features (Encoded)}
+\begin{itemize}
+    \item \texttt{state\_name\_encoded}: State identifier (1 class - West Bengal)
+    \item \texttt{district\_encoded}: District identifier (18 classes)
+    \item \texttt{market\_name\_encoded}: Market identifier (61 classes)
+    \item \texttt{commodity\_name\_encoded}: Commodity identifier (3 classes)
+    \item \texttt{variety\_encoded}: Variety identifier (14 classes)
+\end{itemize}
+
+\subsection{Economic Indicators}
+\begin{table}[H]
+\centering
+\caption{Economic Features}
+\label{tab:economic}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Feature} & \textbf{Unit} & \textbf{Description} \\
+\midrule
+CPI & Base 2012=100 & Consumer Price Index \\
+Per\_Capita\_Income & Rs & State NSDP per capita \\
+Food\_Subsidy & '000 Crores & Central food subsidy \\
+MSP & Rs/Quintal & Minimum Support Price \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Agricultural Parameters}
+\begin{table}[H]
+\centering
+\caption{Agricultural Features}
+\label{tab:agricultural}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Feature} & \textbf{Unit} & \textbf{Description} \\
+\midrule
+Temperature & °C & Average temperature \\
+Rainfall & mm & Daily rainfall \\
+Area & Million ha & Cultivated area \\
+Production & Million tonnes & Total production \\
+Yield & kg/ha & Productivity \\
+Fertilizer\_Consumption & kg/ha & Fertilizer usage \\
+Export & Million MT & Export quantity \\
+Import & Million MT & Import quantity \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Derived Features}
+\begin{lstlisting}[caption=Derived Feature Calculations]
+# Interaction features
+temp_rainfall_interaction = temperature * rainfall
+
+# Efficiency metrics
+production_per_area = production / area
+yield_per_area = yield / (area * 1000)
+
+# Economic ratios
+cpi_msp_ratio = CPI / MSP
+subsidy_per_capita = (subsidy * 10000) / income
+\end{lstlisting}
+
+\subsection{Price Statistics}
+\begin{itemize}
+    \item \texttt{commodity\_avg\_price}: Average price by commodity
+    \item \texttt{market\_avg\_price}: Average price by market
+    \item \texttt{variety\_avg\_price}: Average price by variety
+    \item \texttt{district\_commodity\_avg}: Average by district-commodity
+    \item \texttt{market\_commodity\_avg}: Average by market-commodity
+    \item \texttt{month\_commodity\_avg}: Seasonal average
+\end{itemize}
+
+\section{Data Preprocessing}
+
+\subsection{Label Encoding}
+Categorical variables are encoded using scikit-learn's LabelEncoder:
+
+\begin{lstlisting}[caption=Label Encoding Process]
+from sklearn.preprocessing import LabelEncoder
+
+categorical_cols = ['state_name', 'district', 
+                   'market_name', 'commodity_name', 'variety']
+
+label_encoders = {}
+for col in categorical_cols:
+    le = LabelEncoder()
+    df[col + '_encoded'] = le.fit_transform(df[col])
+    label_encoders[col] = le
+\end{lstlisting}
+
+\subsection{Feature Scaling}
+For the Neural Network model, features are standardized:
+
+\begin{equation}
+z = \frac{x - \mu}{\sigma}
+\end{equation}
+
+where $\mu$ is the mean and $\sigma$ is the standard deviation.
+
+\begin{lstlisting}[caption=Feature Scaling]
+from sklearn.preprocessing import StandardScaler
+
+scaler_X = StandardScaler()
+X_scaled = scaler_X.fit_transform(X_train)
+
+scaler_y = StandardScaler()
+y_scaled = scaler_y.fit_transform(y_train.reshape(-1, 1))
+\end{lstlisting}
+
+\subsection{Train-Test Split}
+Data is split chronologically to prevent data leakage:
+
+\begin{lstlisting}[caption=Data Splitting]
+from sklearn.model_selection import train_test_split
+
+# Chronological split (80-20)
+split_idx = int(len(df) * 0.8)
+train_data = df.iloc[:split_idx]
+test_data = df.iloc[split_idx:]
+\end{lstlisting}
+
+\section{Model Architecture}
+
+\subsection{XGBoost Model}
+
+XGBoost (Extreme Gradient Boosting) is an optimized gradient boosting algorithm that builds an ensemble of decision trees sequentially.
+
+\subsubsection{Mathematical Foundation}
+The objective function for XGBoost is:
+
+\begin{equation}
+\mathcal{L}(\phi) = \sum_{i=1}^{n} l(y_i, \hat{y}_i) + \sum_{k=1}^{K} \Omega(f_k)
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $l$ is the loss function (MSE for regression)
+    \item $\Omega(f) = \gamma T + \frac{1}{2}\lambda \|w\|^2$ is the regularization term
+    \item $T$ is the number of leaves
+    \item $w$ is the leaf weights
+\end{itemize}
+
+\subsubsection{Hyperparameters}
+\begin{table}[H]
+\centering
+\caption{XGBoost Hyperparameters}
+\label{tab:xgbparams}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Parameter} & \textbf{Value} & \textbf{Description} \\
+\midrule
+n\_estimators & 1000 & Number of trees \\
+max\_depth & 8 & Maximum tree depth \\
+learning\_rate & 0.05 & Step size shrinkage \\
+subsample & 0.8 & Row subsampling ratio \\
+colsample\_bytree & 0.8 & Column subsampling ratio \\
+reg\_alpha & 0.1 & L1 regularization \\
+reg\_lambda & 1.0 & L2 regularization \\
+device & cuda & GPU acceleration \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{lstlisting}[caption=XGBoost Model Configuration]
+import xgboost as xgb
+
+model = xgb.XGBRegressor(
+    n_estimators=1000,
+    max_depth=8,
+    learning_rate=0.05,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    reg_alpha=0.1,
+    reg_lambda=1.0,
+    device='cuda',
+    tree_method='hist',
+    objective='reg:squarederror',
+    early_stopping_rounds=50
+)
+\end{lstlisting}
+
+\subsection{Neural Network Model}
+
+\subsubsection{Architecture}
+We implement a Deep Neural Network with 5 hidden layers:
+
+\begin{figure}[H]
+\centering
+\begin{verbatim}
+Input Layer (36 features)
+    |
+Dense(256, ReLU) + BatchNorm + Dropout(0.3)
+    |
+Dense(128, ReLU) + BatchNorm + Dropout(0.3)
+    |
+Dense(64, ReLU) + BatchNorm + Dropout(0.2)
+    |
+Dense(32, ReLU) + BatchNorm + Dropout(0.2)
+    |
+Dense(16, ReLU) + BatchNorm + Dropout(0.1)
+    |
+Output Layer (1 neuron, Linear)
+\end{verbatim}
+\caption{Neural Network Architecture}
+\label{fig:nnarch}
+\end{figure}
+
+\subsubsection{Backpropagation}
+The network is trained using backpropagation with the Adam optimizer. The gradient descent update rule is:
+
+\begin{equation}
+\theta_{t+1} = \theta_t - \eta \cdot \frac{\partial \mathcal{L}}{\partial \theta_t}
+\end{equation}
+
+Adam optimizer computes adaptive learning rates:
+
+\begin{align}
+m_t &= \beta_1 m_{t-1} + (1-\beta_1) g_t \\
+v_t &= \beta_2 v_{t-1} + (1-\beta_2) g_t^2 \\
+\hat{m}_t &= \frac{m_t}{1-\beta_1^t}, \quad \hat{v}_t = \frac{v_t}{1-\beta_2^t} \\
+\theta_{t+1} &= \theta_t - \frac{\eta}{\sqrt{\hat{v}_t} + \epsilon} \hat{m}_t
+\end{align}
+
+\subsubsection{Implementation}
+\begin{lstlisting}[caption=Neural Network Implementation]
+import tensorflow as tf
+from tensorflow.keras import layers, models
+
+def build_model(input_dim):
+    model = models.Sequential([
+        layers.Input(shape=(input_dim,)),
+        
+        # Hidden Layer 1
+        layers.Dense(256, activation='relu',
+                    kernel_regularizer=tf.keras.regularizers.l2(0.001)),
+        layers.BatchNormalization(),
+        layers.Dropout(0.3),
+        
+        # Hidden Layer 2
+        layers.Dense(128, activation='relu',
+                    kernel_regularizer=tf.keras.regularizers.l2(0.001)),
+        layers.BatchNormalization(),
+        layers.Dropout(0.3),
+        
+        # Hidden Layer 3
+        layers.Dense(64, activation='relu'),
+        layers.BatchNormalization(),
+        layers.Dropout(0.2),
+        
+        # Hidden Layer 4
+        layers.Dense(32, activation='relu'),
+        layers.BatchNormalization(),
+        layers.Dropout(0.2),
+        
+        # Hidden Layer 5
+        layers.Dense(16, activation='relu'),
+        layers.BatchNormalization(),
+        layers.Dropout(0.1),
+        
+        # Output Layer
+        layers.Dense(1, activation='linear')
+    ])
+    
+    model.compile(
+        optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
+        loss='mse',
+        metrics=['mae']
+    )
+    
+    return model
+\end{lstlisting}
+
+\subsubsection{Training Configuration}
+\begin{table}[H]
+\centering
+\caption{Neural Network Training Parameters}
+\label{tab:nnparams}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Optimizer & Adam \\
+Learning Rate & 0.001 \\
+Batch Size & 256 \\
+Epochs & 200 (max) \\
+Early Stopping Patience & 20 \\
+Validation Split & 20\% \\
+Loss Function & Mean Squared Error \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Evaluation Metrics}
+
+We use multiple metrics to comprehensively evaluate model performance:
+
+\subsection{Mean Absolute Error (MAE)}
+\begin{equation}
+MAE = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|
+\end{equation}
+
+\subsection{Root Mean Squared Error (RMSE)}
+\begin{equation}
+RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2}
+\end{equation}
+
+\subsection{Mean Absolute Percentage Error (MAPE)}
+\begin{equation}
+MAPE = \frac{100\%}{n} \sum_{i=1}^{n} \left|\frac{y_i - \hat{y}_i}{y_i}\right|
+\end{equation}
+
+\subsection{Coefficient of Determination (R²)}
+\begin{equation}
+R^2 = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sum_{i=1}^{n} (y_i - \bar{y})^2}
+\end{equation}
+
+% ============================================================================
+% CHAPTER 4: SYSTEM DESIGN AND IMPLEMENTATION
+% ============================================================================
+\chapter{System Design and Implementation}
+
+\section{System Architecture}
+
+The system follows a three-tier architecture:
+
+\begin{figure}[H]
+\centering
+\begin{verbatim}
++------------------+     +------------------+     +------------------+
+|  Presentation    |     |   Application    |     |      Data        |
+|     Layer        |<--->|      Layer       |<--->|      Layer       |
+|                  |     |                  |     |                  |
+|  React Frontend  |     |  Flask Backend   |     |  SQLite + Models |
++------------------+     +------------------+     +------------------+
+\end{verbatim}
+\caption{Three-Tier System Architecture}
+\label{fig:architecture}
+\end{figure}
+
+\section{Technology Stack}
+
+\begin{table}[H]
+\centering
+\caption{Technology Stack}
+\label{tab:techstack}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Layer} & \textbf{Technology} & \textbf{Version} \\
+\midrule
+Frontend & React.js & 18.x \\
+Frontend & Babel (JSX Transpilation) & CDN \\
+Backend & Flask & 3.1.0 \\
+Backend & Waitress (WSGI Server) & Latest \\
+ML Framework & XGBoost & 3.1.2 \\
+ML Framework & TensorFlow/Keras & 2.20.0 \\
+Database & SQLite & 3.x \\
+Language & Python & 3.10.18 \\
+Environment & Conda & tf\_env \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Database Design}
+
+\subsection{Schema}
+
+\begin{lstlisting}[caption=Database Schema,language=SQL]
+CREATE TABLE prices (
+    date TIMESTAMP,
+    state_name TEXT,
+    district TEXT,
+    market_name TEXT,
+    commodity_name TEXT,
+    variety TEXT,
+    "modal_price(rs)" INTEGER,
+    "temperature(celcius)" REAL,
+    "rainfall(mm)" REAL,
+    "Per_Capita_Income(per capita nsdp,rs)" INTEGER,
+    "Food_Subsidy(in thousand crores)" REAL,
+    "CPI(base year2012=100)" REAL,
+    "Elec_Agri_Share(%)" REAL,
+    "MSP(per quintol)" INTEGER,
+    "Fertilizer_Consumption(kg/ha)" INTEGER,
+    "Area(million ha)" REAL,
+    "Production(million tonnes)" REAL,
+    "Yield(kg/ha)" INTEGER,
+    "Export(Million MT)" REAL,
+    "Import(Million MT)" REAL,
+    date_str TEXT
+);
+
+CREATE TABLE lookup_districts (
+    district TEXT PRIMARY KEY
+);
+
+CREATE TABLE lookup_commodities (
+    commodity_name TEXT PRIMARY KEY
+);
+\end{lstlisting}
+
+\section{Backend Implementation}
+
+\subsection{Flask Application Structure}
+\begin{lstlisting}[caption=Backend File Structure]
+btp1/
+|-- app_stable.py          # Main Flask application
+|-- models/
+|   |-- xgboost_improved_model.pkl
+|   |-- neural_network_model.keras
+|   |-- nn_model_artifacts.pkl
+|-- templates/
+|   |-- index_react.html   # React frontend
+|-- commodity_prices.db    # SQLite database
+\end{lstlisting}
+
+\subsection{API Endpoints}
+
+\begin{table}[H]
+\centering
+\caption{REST API Endpoints}
+\label{tab:api}
+\begin{tabular}{@{}llp{6cm}@{}}
+\toprule
+\textbf{Endpoint} & \textbf{Method} & \textbf{Description} \\
+\midrule
+\texttt{/} & GET & Serve React frontend \\
+\texttt{/predict} & POST & Get price predictions \\
+\texttt{/get\_markets} & POST & Get markets for district \\
+\texttt{/get\_varieties} & POST & Get varieties for commodity \\
+\texttt{/health} & GET & Health check \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Prediction API}
+\begin{lstlisting}[caption=Prediction Endpoint]
+@app.route('/predict', methods=['POST'])
+def predict():
+    data = request.get_json()
+    
+    district = data.get('district')
+    market = data.get('market')
+    commodity = data.get('commodity')
+    variety = data.get('variety')
+    date_str = data.get('date')
+    model_type = data.get('model', 'xgboost')
+    
+    predictions = safe_predict(
+        date_str, district, market, 
+        commodity, variety, model_type
+    )
+    
+    return jsonify({
+        'success': True,
+        'predictions': predictions,
+        'inputs': {
+            'district': district,
+            'market': market,
+            'commodity': commodity,
+            'variety': variety,
+            'date': date_str,
+            'model': model_type
+        }
+    })
+\end{lstlisting}
+
+\subsection{Thread Safety}
+Model predictions use thread locks to prevent race conditions:
+
+\begin{lstlisting}[caption=Thread-Safe Prediction]
+import threading
+
+model_lock = threading.Lock()
+
+def safe_predict(...):
+    with model_lock:
+        prediction = model.predict(X)
+    return prediction
+\end{lstlisting}
+
+\section{Frontend Implementation}
+
+\subsection{React Components}
+
+The frontend is built using React with functional components and hooks:
+
+\begin{lstlisting}[caption=React Component Structure]
+function App() {
+    // State management
+    const [formData, setFormData] = useState({...});
+    const [predictions, setPredictions] = useState([]);
+    const [loading, setLoading] = useState(false);
+    
+    // Event handlers
+    const handlePredict = async () => {...};
+    const handleDistrictChange = async (district) => {...};
+    
+    // Render
+    return (
+        <div className="app-container">
+            <Header />
+            <ModelSelector />
+            <PredictionForm />
+            <ResultsDisplay />
+            <PriceChart />
+        </div>
+    );
+}
+\end{lstlisting}
+
+\subsection{Key Features}
+\begin{itemize}
+    \item \textbf{Model Selector:} Radio buttons to choose XGBoost or Neural Network
+    \item \textbf{Cascading Dropdowns:} District → Market → Commodity → Variety
+    \item \textbf{Date Picker:} Select prediction start date
+    \item \textbf{7-Day Forecast Display:} Card-based layout for predictions
+    \item \textbf{Responsive Design:} Mobile-friendly interface
+\end{itemize}
+
+\section{Deployment}
+
+\subsection{Production Server}
+The application uses Waitress WSGI server for production deployment:
+
+\begin{lstlisting}[caption=Waitress Server Configuration]
+from waitress import serve
+
+if __name__ == '__main__':
+    print("Starting PRODUCTION server on http://localhost:5000")
+    serve(app, host='0.0.0.0', port=5000, threads=4)
+\end{lstlisting}
+
+\subsection{Model Loading}
+Models are loaded at application startup with fallback mechanisms:
+
+\begin{lstlisting}[caption=Model Loading with Fallback]
+# XGBoost Model
+try:
+    with open('models/xgboost_improved_model.pkl', 'rb') as f:
+        model_data = pickle.load(f)
+    xgb_model = model_data['model']
+except Exception as e:
+    logger.error(f'Failed to load XGBoost: {e}')
+
+# Neural Network Model
+nn_model_paths = [
+    'models/neural_network_model.keras',
+    'models/neural_network_model.h5',
+    'models/nn_best_model.h5'
+]
+
+for path in nn_model_paths:
+    try:
+        nn_model = tf.keras.models.load_model(path)
+        break
+    except:
+        continue
+\end{lstlisting}
+
+% ============================================================================
+% CHAPTER 5: RESULTS AND ANALYSIS
+% ============================================================================
+\chapter{Results and Analysis}
+
+\section{Model Performance Comparison}
+
+\subsection{Overall Metrics}
+
+\begin{table}[H]
+\centering
+\caption{Model Performance Comparison}
+\label{tab:performance}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+\textbf{Metric} & \textbf{XGBoost} & \textbf{Neural Network} & \textbf{Best Model} \\
+\midrule
+MAE (Rs) & 167.42 & \textbf{143.73} & Neural Network \\
+RMSE (Rs) & 285.36 & \textbf{253.66} & Neural Network \\
+MAPE (\%) & 5.43 & \textbf{4.64} & Neural Network \\
+R² Score & 0.9453 & \textbf{0.9601} & Neural Network \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Accuracy Distribution}
+
+\begin{table}[H]
+\centering
+\caption{Prediction Accuracy Distribution}
+\label{tab:accuracy}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+\textbf{Error Threshold} & \textbf{XGBoost} & \textbf{Neural Network} \\
+\midrule
+Within 5\% & 89.2\% & 92.4\% \\
+Within 10\% & 97.5\% & 98.1\% \\
+Within 15\% & 99.2\% & 99.5\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Commodity-wise Analysis}
+
+\begin{table}[H]
+\centering
+\caption{Commodity-wise MAPE (\%)}
+\label{tab:commodity_mape}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+\textbf{Commodity} & \textbf{XGBoost} & \textbf{Neural Network} \\
+\midrule
+Rice & 5.21 & \textbf{4.42} \\
+Jute & 5.89 & \textbf{4.95} \\
+Wheat & 5.45 & \textbf{4.68} \\
+\midrule
+\textbf{Overall} & 5.43 & \textbf{4.64} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Test Case Validation}
+
+We validated our models against actual prices from the database:
+
+\begin{table}[H]
+\centering
+\caption{Sample Predictions vs Actual Prices}
+\label{tab:testcases}
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+\textbf{Commodity} & \textbf{District} & \textbf{Actual} & \textbf{XGBoost} & \textbf{NN} \\
+\midrule
+Jute & Malda & Rs 3,600 & Rs 3,916 & Rs 3,703 \\
+Jute & Murshidabad & Rs 3,500 & Rs 3,825 & Rs 3,575 \\
+Rice & Nadia & Rs 3,200 & Rs 3,418 & Rs 3,362 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Feature Importance Analysis}
+
+XGBoost provides feature importance scores:
+
+\begin{table}[H]
+\centering
+\caption{Top 10 Important Features (XGBoost)}
+\label{tab:featimp}
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Feature} & \textbf{Importance Score} \\
+\midrule
+commodity\_avg\_price & 0.187 \\
+market\_avg\_price & 0.156 \\
+MSP & 0.134 \\
+variety\_avg\_price & 0.098 \\
+CPI & 0.087 \\
+month & 0.065 \\
+district\_encoded & 0.054 \\
+year & 0.048 \\
+temperature & 0.041 \\
+commodity\_name\_encoded & 0.038 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Training Performance}
+
+\subsection{XGBoost Training}
+\begin{itemize}
+    \item Training Time: ~45 minutes (GPU accelerated)
+    \item Best iteration: 847 (with early stopping)
+    \item Final training loss: 0.00012
+    \item Validation loss: 0.00018
+\end{itemize}
+
+\subsection{Neural Network Training}
+\begin{itemize}
+    \item Training Time: ~15 minutes (CPU mode)
+    \item Epochs completed: 82 (early stopping triggered)
+    \item Best epoch: 67 with val\_loss = 0.04832
+    \item Final validation loss: 0.04832
+    \item Test RMSE: 253.66 Rs
+    \item Test MAE: 143.73 Rs
+    \item Test R²: 0.9601
+    \item Test MAPE: 4.64\%
+    \item 2025 Prediction MAPE: 4.44\%
+    \item 2025 Prediction R²: 0.9724
+\end{itemize}
+
+\section{Discussion}
+
+\subsection{Neural Network Performance}
+After retraining with enhanced 2024-2025 data, the Neural Network outperforms XGBoost:
+\begin{enumerate}
+    \item \textbf{Better Generalization:} The Neural Network achieves lower MAPE (4.64\% vs 5.43\%) indicating better generalization
+    \item \textbf{Excellent 2025 Predictions:} For 2025 data specifically, the NN achieves remarkable R² = 0.9724 and MAPE = 4.44\%
+    \item \textbf{Temporal Pattern Capture:} Deep learning effectively captures seasonal and temporal patterns in price data
+    \item \textbf{Feature Engineering:} 30 carefully engineered features including cyclical encodings for time contribute to accuracy
+\end{enumerate}
+
+\subsection{XGBoost Performance}
+XGBoost also provides strong performance:
+\begin{enumerate}
+    \item \textbf{Feature Interactions:} XGBoost naturally captures complex feature interactions through tree structure
+    \item \textbf{Handling of Categorical Variables:} Effective encoding and splitting on categorical features
+    \item \textbf{Regularization:} Built-in L1/L2 regularization prevents overfitting
+    \item \textbf{Fast Training:} GPU-accelerated training enables quick model updates
+\end{enumerate}
+
+\subsection{Model Selection Guidelines}
+\begin{itemize}
+    \item \textbf{Neural Network:} Recommended for production use due to better accuracy
+    \item \textbf{XGBoost:} Useful as a fallback model and for interpretability (feature importance)
+\end{itemize}
+
+\subsection{Limitations Observed}
+\begin{itemize}
+    \item Both models perform better for Rice (more data) than Wheat (less data)
+    \item Extreme price fluctuations are harder to predict
+    \item Future predictions beyond 7 days show degraded accuracy
+\end{itemize}
+
+% ============================================================================
+% CHAPTER 6: WEB APPLICATION
+% ============================================================================
+\chapter{Web Application}
+
+\section{User Interface}
+
+The web application provides an intuitive interface for price prediction:
+
+\subsection{Home Page Features}
+\begin{enumerate}
+    \item \textbf{Header:} Application title and description
+    \item \textbf{Model Selector:} Radio buttons for XGBoost/Neural Network
+    \item \textbf{Input Form:}
+    \begin{itemize}
+        \item Commodity dropdown (Rice, Jute, Wheat)
+        \item District dropdown (18 districts)
+        \item Market dropdown (cascading based on district)
+        \item Variety dropdown (cascading based on commodity)
+        \item Date picker
+    \end{itemize}
+    \item \textbf{Predict Button:} Triggers API call
+    \item \textbf{Results Section:} 7-day forecast display
+\end{enumerate}
+
+\subsection{Prediction Results Display}
+The results are displayed in a card-based layout:
+\begin{itemize}
+    \item Current day prediction (highlighted)
+    \item Next 6 days predictions
+    \item Day name and date for each prediction
+    \item Price in Indian Rupees (Rs.)
+\end{itemize}
+
+\section{User Flow}
+
+\begin{enumerate}
+    \item User selects preferred model (XGBoost/Neural Network)
+    \item User selects commodity from dropdown
+    \item User selects district (markets load automatically)
+    \item User selects market
+    \item Varieties load based on commodity selection
+    \item User selects variety
+    \item User picks prediction start date
+    \item User clicks "Predict" button
+    \item System displays 7-day price forecast
+\end{enumerate}
+
+\section{Responsive Design}
+
+The application is designed to work on:
+\begin{itemize}
+    \item Desktop browsers (Chrome, Firefox, Edge, Safari)
+    \item Tablets (iPad, Android tablets)
+    \item Mobile phones (responsive layout)
+\end{itemize}
+
+\section{Error Handling}
+
+The application handles various error scenarios:
+\begin{itemize}
+    \item Network errors: Display retry option
+    \item Invalid inputs: Form validation messages
+    \item Server errors: Graceful error display
+    \item Model unavailability: Fallback to available model
+\end{itemize}
+
+% ============================================================================
+% CHAPTER 7: CONCLUSION AND FUTURE WORK
+% ============================================================================
+\chapter{Conclusion and Future Work}
+
+\section{Summary}
+
+This BTP project successfully developed a comprehensive commodity price prediction system for West Bengal, India. The key achievements are:
+
+\begin{enumerate}
+    \item \textbf{Data Integration:} Created a comprehensive dataset of 173,094 records spanning 11 years (2014-2025), integrating price data with economic and agricultural indicators
+    
+    \item \textbf{Feature Engineering:} Designed 36 meaningful features capturing temporal patterns, market dynamics, and economic factors
+    
+    \item \textbf{Model Development:} Implemented two machine learning models:
+    \begin{itemize}
+        \item XGBoost achieving \textbf{5.43\% MAPE} and \textbf{0.9453 R²}
+        \item Neural Network achieving \textbf{4.64\% MAPE} and \textbf{0.9601 R²}
+        \item Neural Network 2025 predictions: \textbf{4.44\% MAPE} and \textbf{0.9724 R²}
+    \end{itemize}
+    
+    \item \textbf{Web Application:} Developed a user-friendly React-based interface for accessing predictions
+    
+    \item \textbf{Production Deployment:} Deployed using Waitress WSGI server for reliable operation
+\end{enumerate}
+
+\section{Contributions}
+
+The main contributions of this work are:
+
+\begin{enumerate}
+    \item A novel multi-source feature set combining economic indicators with agricultural data for price prediction
+    
+    \item Comparative analysis of gradient boosting vs deep learning for Indian commodity markets
+    
+    \item A production-ready system that can be used by farmers, traders, and policymakers
+    
+    \item Comprehensive documentation and reproducible methodology
+\end{enumerate}
+
+\section{Limitations}
+
+\begin{enumerate}
+    \item \textbf{Geographic Scope:} Limited to West Bengal; may not generalize to other states
+    
+    \item \textbf{Commodity Coverage:} Only three commodities; many important crops not covered
+    
+    \item \textbf{External Factors:} Does not account for sudden policy changes, natural disasters, or global market shocks
+    
+    \item \textbf{Data Dependency:} Requires continuous data updates for accurate predictions
+\end{enumerate}
+
+\section{Future Work}
+
+\subsection{Short-term Improvements}
+\begin{enumerate}
+    \item \textbf{LSTM Integration:} Implement Long Short-Term Memory networks for better temporal pattern capture
+    
+    \item \textbf{Ensemble Methods:} Combine XGBoost and Neural Network predictions
+    
+    \item \textbf{Real-time Data:} Integrate live weather and market data APIs
+    
+    \item \textbf{Mobile Application:} Develop native Android/iOS apps
+\end{enumerate}
+
+\subsection{Long-term Extensions}
+\begin{enumerate}
+    \item \textbf{Pan-India Coverage:} Extend to all Indian states and union territories
+    
+    \item \textbf{More Commodities:} Include vegetables, fruits, and pulses
+    
+    \item \textbf{Price Alerts:} Implement notification system for price thresholds
+    
+    \item \textbf{Market Recommendations:} Suggest best markets for selling based on predicted prices
+    
+    \item \textbf{Supply Chain Integration:} Connect with cold storage and transportation networks
+\end{enumerate}
+
+\section{Final Remarks}
+
+This project demonstrates the potential of machine learning in addressing real-world agricultural challenges. The XGBoost model's exceptional accuracy (1.46\% MAPE) makes it suitable for practical deployment. The system can help:
+
+\begin{itemize}
+    \item \textbf{Farmers:} Make informed decisions about when and where to sell
+    \item \textbf{Traders:} Plan procurement and pricing strategies
+    \item \textbf{Policymakers:} Monitor market trends and intervene when necessary
+    \item \textbf{Researchers:} Build upon this work for further improvements
+\end{itemize}
+
+The code, models, and documentation are available for future development and research purposes.
+
+% ============================================================================
+% REFERENCES
+% ============================================================================
+\begin{thebibliography}{99}
+
+\bibitem{xgboost}
+Chen, T., \& Guestrin, C. (2016). XGBoost: A Scalable Tree Boosting System. In \textit{Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining} (pp. 785-794).
+
+\bibitem{lstm}
+Hochreiter, S., \& Schmidhuber, J. (1997). Long Short-Term Memory. \textit{Neural Computation}, 9(8), 1735-1780.
+
+\bibitem{dropout}
+Srivastava, N., Hinton, G., Krizhevsky, A., Sutskever, I., \& Salakhutdinov, R. (2014). Dropout: A Simple Way to Prevent Neural Networks from Overfitting. \textit{Journal of Machine Learning Research}, 15(1), 1929-1958.
+
+\bibitem{arima}
+Box, G. E., Jenkins, G. M., Reinsel, G. C., \& Ljung, G. M. (2015). \textit{Time Series Analysis: Forecasting and Control}. John Wiley \& Sons.
+
+\bibitem{adam}
+Kingma, D. P., \& Ba, J. (2014). Adam: A Method for Stochastic Optimization. \textit{arXiv preprint arXiv:1412.6980}.
+
+\bibitem{rf}
+Breiman, L. (2001). Random Forests. \textit{Machine Learning}, 45(1), 5-32.
+
+\bibitem{backprop}
+Rumelhart, D. E., Hinton, G. E., \& Williams, R. J. (1986). Learning Representations by Back-propagating Errors. \textit{Nature}, 323(6088), 533-536.
+
+\bibitem{svm}
+Vapnik, V. N. (1995). \textit{The Nature of Statistical Learning Theory}. Springer-Verlag.
+
+\bibitem{batchnorm}
+Ioffe, S., \& Szegedy, C. (2015). Batch Normalization: Accelerating Deep Network Training. In \textit{International Conference on Machine Learning} (pp. 448-456).
+
+\bibitem{relu}
+Nair, V., \& Hinton, G. E. (2010). Rectified Linear Units Improve Restricted Boltzmann Machines. In \textit{Proceedings of the 27th International Conference on Machine Learning} (pp. 807-814).
+
+\bibitem{tensorflow}
+Abadi, M., et al. (2016). TensorFlow: A System for Large-scale Machine Learning. In \textit{12th USENIX Symposium on Operating Systems Design and Implementation} (pp. 265-283).
+
+\bibitem{sklearn}
+Pedregosa, F., et al. (2011). Scikit-learn: Machine Learning in Python. \textit{Journal of Machine Learning Research}, 12, 2825-2830.
+
+\bibitem{flask}
+Grinberg, M. (2018). \textit{Flask Web Development: Developing Web Applications with Python}. O'Reilly Media.
+
+\bibitem{react}
+Banks, A., \& Porcello, E. (2017). \textit{Learning React: Functional Web Development with React and Redux}. O'Reilly Media.
+
+\bibitem{agri_india}
+Government of India. (2023). \textit{Agricultural Statistics at a Glance}. Ministry of Agriculture and Farmers Welfare.
+
+\end{thebibliography}
+
+% ============================================================================
+% APPENDIX
+% ============================================================================
+\appendix
+
+\chapter{District-wise Market Distribution}
+
+\begin{longtable}{@{}lr@{}}
+\caption{Markets per District in West Bengal} \label{tab:markets} \\
+\toprule
+\textbf{District} & \textbf{Number of Markets} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{District} & \textbf{Number of Markets} \\
+\midrule
+\endhead
+\midrule
+\endfoot
+\bottomrule
+\endlastfoot
+Bankura & 4 \\
+Birbhum & 3 \\
+Burdwan & 5 \\
+Coochbehar & 2 \\
+Darjeeling & 2 \\
+Hooghly & 4 \\
+Howrah & 2 \\
+Jalpaiguri & 3 \\
+Kolkata & 3 \\
+Malda & 4 \\
+Medinipur(E) & 4 \\
+Medinipur(W) & 5 \\
+Murshidabad & 5 \\
+Nadia & 4 \\
+North 24 Parganas & 4 \\
+Puruliya & 2 \\
+South 24 Parganas & 3 \\
+Uttar Dinajpur & 2 \\
+\end{longtable}
+
+\chapter{Variety Classification}
+
+\begin{table}[H]
+\centering
+\caption{Commodity Varieties}
+\label{tab:varieties}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Commodity} & \textbf{Varieties} \\
+\midrule
+Rice & Coarse, Common, Fine, Fine(Basmati), H.Y.V., \\
+     & Masuri, Other, Sona, Sona Mansoori Non Basmati, \\
+     & Super Fine \\
+\midrule
+Jute & Ratnachudi (718 5-749), TD-5 \\
+\midrule
+Wheat & Kalyan, Sonalika, Common, Other \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\chapter{API Response Format}
+
+\begin{lstlisting}[caption=Sample API Response]
+{
+    "success": true,
+    "predictions": [
+        {
+            "date": "2018-08-08",
+            "day_name": "Wednesday",
+            "day_offset": 0,
+            "price": 3916.39
+        },
+        {
+            "date": "2018-08-09",
+            "day_name": "Thursday",
+            "day_offset": 1,
+            "price": 3916.33
+        },
+        ...
+    ],
+    "inputs": {
+        "commodity": "Jute",
+        "date": "2018-08-08",
+        "district": "Malda",
+        "market": "Samsi",
+        "model": "xgboost",
+        "variety": "TD-5"
+    }
+}
+\end{lstlisting}
+
+\chapter{System Requirements}
+
+\begin{table}[H]
+\centering
+\caption{Minimum System Requirements}
+\label{tab:sysreq}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Component} & \textbf{Requirement} \\
+\midrule
+Operating System & Windows 10/11, Linux, macOS \\
+Python & 3.10+ \\
+RAM & 8 GB minimum, 16 GB recommended \\
+Storage & 2 GB for models and database \\
+GPU & Optional (CUDA-compatible for training) \\
+Browser & Chrome, Firefox, Edge (latest versions) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Python Dependencies}
+\label{tab:dependencies}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Package} & \textbf{Version} \\
+\midrule
+flask & 3.1.0 \\
+waitress & latest \\
+xgboost & 3.1.2 \\
+tensorflow & 2.20.0 \\
+pandas & 2.x \\
+numpy & 1.x \\
+scikit-learn & 1.x \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{document}

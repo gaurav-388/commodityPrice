@@ -1,0 +1,20 @@
+{
+  "training_date": "2025-11-26 15:57:12",
+  "dataset": "Bengal_Prices_2014-25_enhanced.csv",
+  "total_records": 177320,
+  "training_samples": 141856,
+  "test_samples": 35464,
+  "features_used": 23,
+  "train_metrics": {
+    "RMSE": 223.48521326265205,
+    "MAE": 135.51358842150557,
+    "R2": 0.9686503269893154,
+    "MAPE": 4.603479775858377
+  },
+  "test_metrics": {
+    "RMSE": 295.001522264687,
+    "MAE": 164.5692471935118,
+    "R2": 0.9453039921914871,
+    "MAPE": 5.432691545982645
+  }
+}

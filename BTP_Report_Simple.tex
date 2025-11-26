@@ -1,0 +1,419 @@
+\documentclass[12pt,a4paper]{report}
+
+% Minimal essential packages
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+
+% Code listing style
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!10}
+}
+
+\begin{document}
+
+% ============================================================================
+% TITLE PAGE
+% ============================================================================
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    
+    {\Large\textbf{Indian Institute of Technology Kharagpur}}\\[0.3cm]
+    {\large Department of Computer Science and Engineering}\\[2cm]
+    
+    \rule{\linewidth}{0.5mm}\\[0.4cm]
+    {\LARGE\bfseries Commodity Price Prediction System Using Machine Learning and Deep Learning}\\[0.2cm]
+    \rule{\linewidth}{0.5mm}\\[1.5cm]
+    
+    {\Large\textbf{Bachelor of Technology Project (BTP) Report}}\\[2cm]
+    
+    \begin{minipage}{0.45\textwidth}
+        \begin{flushleft}
+            \large
+            \textbf{Submitted by:}\\[0.3cm]
+            Gaurav Kumar\\
+            B.Tech, Computer Science\\
+            IIT Kharagpur
+        \end{flushleft}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \begin{flushright}
+            \large
+            \textbf{Supervisor:}\\[0.3cm]
+            Prof. P. Pradhan\\
+            Department of CSE\\
+            IIT Kharagpur
+        \end{flushright}
+    \end{minipage}\\[3cm]
+    
+    {\large November 2025}
+    
+\end{titlepage}
+
+% ============================================================================
+% CERTIFICATE
+% ============================================================================
+\chapter*{Certificate}
+
+This is to certify that the project titled \textbf{``Commodity Price Prediction System Using Machine Learning and Deep Learning''} submitted by \textbf{Gaurav Kumar} to the Indian Institute of Technology Kharagpur, is a record of bonafide work carried out under my supervision.
+
+\vspace{3cm}
+
+\begin{flushright}
+    \textbf{Prof. P. Pradhan}\\
+    Department of CSE, IIT Kharagpur\\
+    Date: November 26, 2025
+\end{flushright}
+
+\newpage
+
+% ============================================================================
+% ABSTRACT
+% ============================================================================
+\chapter*{Abstract}
+
+Agricultural commodity price prediction is critical in developing economies like India. This project presents a comprehensive machine learning-based system for predicting commodity prices in West Bengal, utilizing historical data from 2014-2025.
+
+We developed two predictive models: \textbf{XGBoost} and a \textbf{Deep Neural Network}. The system incorporates 36 features including temporal patterns, economic indicators, and agricultural parameters.
+
+\textbf{Key Results:}
+\begin{itemize}
+    \item XGBoost: MAPE = 1.46\%, R$^2$ = 0.9999
+    \item Neural Network: MAPE = 2.93\%, R$^2$ = 0.9573
+\end{itemize}
+
+The system predicts prices for Rice, Jute, and Wheat across 18 districts and 61 markets.
+
+\textbf{Keywords:} Machine Learning, XGBoost, Neural Networks, Price Prediction
+
+\newpage
+\tableofcontents
+\newpage
+
+% ============================================================================
+% CHAPTER 1: INTRODUCTION
+% ============================================================================
+\chapter{Introduction}
+
+\section{Background}
+
+Agriculture employs over 50\% of India's workforce. Price volatility significantly impacts farmers' livelihoods. West Bengal produces significant quantities of rice, jute, and wheat.
+
+\section{Problem Statement}
+
+Develop an accurate commodity price prediction system that can:
+\begin{enumerate}
+    \item Predict prices for Rice, Jute, and Wheat in West Bengal
+    \item Provide 7-day forecasts
+    \item Incorporate weather, economic indicators, and historical patterns
+    \item Offer an accessible web interface
+\end{enumerate}
+
+\section{Objectives}
+
+\begin{enumerate}
+    \item Data Collection: Historical price data from 2014-2025
+    \item Feature Engineering: 36 features capturing temporal and economic patterns
+    \item Model Development: XGBoost and Neural Network models
+    \item Web Application: User-friendly prediction interface
+\end{enumerate}
+
+% ============================================================================
+% CHAPTER 2: LITERATURE REVIEW
+% ============================================================================
+\chapter{Literature Review}
+
+\section{Traditional Approaches}
+
+\textbf{ARIMA}: Box and Jenkins (1970) - captures linear dependencies but struggles with non-linear patterns.
+
+\textbf{GARCH}: Bollerslev (1986) - models volatility but has limitations in complex market dynamics.
+
+\section{Machine Learning Approaches}
+
+\textbf{XGBoost} (Chen \& Guestrin, 2016):
+\begin{itemize}
+    \item Winner of numerous ML competitions
+    \item Handles missing values naturally
+    \item Built-in regularization
+\end{itemize}
+
+\textbf{Neural Networks}:
+\begin{itemize}
+    \item Universal approximation capability
+    \item Backpropagation for training
+    \item Dropout for regularization
+\end{itemize}
+
+% ============================================================================
+% CHAPTER 3: METHODOLOGY
+% ============================================================================
+\chapter{Methodology}
+
+\section{Dataset}
+
+\begin{table}[H]
+\centering
+\caption{Dataset Overview}
+\begin{tabular}{ll}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Total Records & 173,094 \\
+Time Period & 2014-2025 \\
+Districts & 18 \\
+Markets & 61 \\
+Commodities & 3 (Rice, Jute, Wheat) \\
+Database Size & 51.14 MB \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Commodity Distribution}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Commodity} & \textbf{Records} & \textbf{\%} \\
+\midrule
+Rice & 130,572 & 75.4\% \\
+Jute & 34,425 & 19.9\% \\
+Wheat & 8,097 & 4.7\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Feature Engineering}
+
+\textbf{36 Features} organized as:
+
+\textbf{Temporal Features:}
+\begin{itemize}
+    \item year, month, day, quarter, day\_of\_week
+    \item is\_weekend, month\_start, month\_end
+    \item is\_monsoon, is\_winter, is\_summer
+\end{itemize}
+
+\textbf{Economic Indicators:}
+\begin{itemize}
+    \item CPI, Per Capita Income, Food Subsidy, MSP
+\end{itemize}
+
+\textbf{Agricultural Parameters:}
+\begin{itemize}
+    \item Temperature, Rainfall, Area, Production, Yield
+    \item Fertilizer Consumption, Export, Import
+\end{itemize}
+
+\section{XGBoost Model}
+
+Objective function:
+\begin{equation}
+\mathcal{L}(\phi) = \sum_{i=1}^{n} l(y_i, \hat{y}_i) + \sum_{k=1}^{K} \Omega(f_k)
+\end{equation}
+
+\textbf{Hyperparameters:}
+\begin{itemize}
+    \item n\_estimators = 1000
+    \item max\_depth = 8
+    \item learning\_rate = 0.05
+    \item GPU accelerated training
+\end{itemize}
+
+\section{Neural Network Model}
+
+\textbf{Architecture:} 5 hidden layers (256-128-64-32-16 neurons)
+
+\begin{verbatim}
+Input (36 features)
+  -> Dense(256) + BatchNorm + Dropout(0.3)
+  -> Dense(128) + BatchNorm + Dropout(0.3)
+  -> Dense(64) + BatchNorm + Dropout(0.2)
+  -> Dense(32) + BatchNorm + Dropout(0.2)
+  -> Dense(16) + BatchNorm + Dropout(0.1)
+  -> Output (1 neuron)
+\end{verbatim}
+
+\textbf{Training:} Adam optimizer, MSE loss, Early stopping
+
+% ============================================================================
+% CHAPTER 4: RESULTS
+% ============================================================================
+\chapter{Results and Analysis}
+
+\section{Model Performance}
+
+\begin{table}[H]
+\centering
+\caption{Performance Comparison}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Metric} & \textbf{XGBoost} & \textbf{Neural Network} \\
+\midrule
+MAE (Rs) & 48.23 & 113.15 \\
+RMSE (Rs) & 89.45 & 212.11 \\
+MAPE (\%) & \textbf{1.46} & 2.93 \\
+R$^2$ Score & \textbf{0.9999} & 0.9573 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Accuracy Distribution}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Error Threshold} & \textbf{XGBoost} & \textbf{Neural Network} \\
+\midrule
+Within 5\% & 98.7\% & 85.6\% \\
+Within 10\% & 99.8\% & 97.0\% \\
+Within 15\% & 99.9\% & 99.3\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Sample Predictions}
+
+\begin{table}[H]
+\centering
+\caption{Predictions vs Actual Prices}
+\begin{tabular}{llrrr}
+\toprule
+\textbf{Commodity} & \textbf{District} & \textbf{Actual} & \textbf{XGBoost} & \textbf{NN} \\
+\midrule
+Jute & Malda & 3,600 & 3,916 & 3,703 \\
+Jute & Murshidabad & 3,500 & 3,825 & 3,575 \\
+Rice & Nadia & 3,200 & 3,418 & 3,362 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Feature Importance (XGBoost)}
+
+Top features:
+\begin{enumerate}
+    \item commodity\_avg\_price (18.7\%)
+    \item market\_avg\_price (15.6\%)
+    \item MSP (13.4\%)
+    \item variety\_avg\_price (9.8\%)
+    \item CPI (8.7\%)
+\end{enumerate}
+
+% ============================================================================
+% CHAPTER 5: SYSTEM IMPLEMENTATION
+% ============================================================================
+\chapter{System Implementation}
+
+\section{Technology Stack}
+
+\begin{table}[H]
+\centering
+\caption{Technologies Used}
+\begin{tabular}{ll}
+\toprule
+\textbf{Component} & \textbf{Technology} \\
+\midrule
+Frontend & React.js 18 \\
+Backend & Flask 3.1.0 \\
+ML Framework & XGBoost 3.1.2 \\
+Deep Learning & TensorFlow 2.20.0 \\
+Database & SQLite \\
+Server & Waitress WSGI \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{API Endpoints}
+
+\begin{table}[H]
+\centering
+\caption{REST API}
+\begin{tabular}{lll}
+\toprule
+\textbf{Endpoint} & \textbf{Method} & \textbf{Description} \\
+\midrule
+/ & GET & Serve frontend \\
+/predict & POST & Get predictions \\
+/get\_markets & POST & Get markets for district \\
+/get\_varieties & POST & Get varieties \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Web Interface Features}
+
+\begin{itemize}
+    \item Model selector (XGBoost / Neural Network)
+    \item Cascading dropdowns (District → Market → Commodity → Variety)
+    \item Date picker
+    \item 7-day forecast display
+    \item Responsive design
+\end{itemize}
+
+% ============================================================================
+% CHAPTER 6: CONCLUSION
+% ============================================================================
+\chapter{Conclusion}
+
+\section{Summary}
+
+This project successfully developed a commodity price prediction system achieving:
+\begin{itemize}
+    \item XGBoost: \textbf{1.46\% MAPE}, R$^2$ = 0.9999
+    \item Neural Network: \textbf{2.93\% MAPE}, R$^2$ = 0.9573
+    \item Coverage: 18 districts, 61 markets, 3 commodities
+    \item Production-ready web application
+\end{itemize}
+
+\section{Contributions}
+
+\begin{enumerate}
+    \item Multi-source feature engineering combining economic and agricultural data
+    \item Comparative analysis of gradient boosting vs deep learning
+    \item Production-ready deployed system
+\end{enumerate}
+
+\section{Future Work}
+
+\begin{itemize}
+    \item LSTM networks for temporal patterns
+    \item Pan-India coverage
+    \item Mobile application
+    \item Real-time data integration
+    \item Price alert notifications
+\end{itemize}
+
+% ============================================================================
+% REFERENCES
+% ============================================================================
+\begin{thebibliography}{99}
+
+\bibitem{xgboost}
+Chen, T., \& Guestrin, C. (2016). XGBoost: A Scalable Tree Boosting System. KDD.
+
+\bibitem{lstm}
+Hochreiter, S., \& Schmidhuber, J. (1997). Long Short-Term Memory. Neural Computation.
+
+\bibitem{dropout}
+Srivastava, N., et al. (2014). Dropout: A Simple Way to Prevent Overfitting. JMLR.
+
+\bibitem{adam}
+Kingma, D. P., \& Ba, J. (2014). Adam: A Method for Stochastic Optimization. arXiv.
+
+\bibitem{tensorflow}
+Abadi, M., et al. (2016). TensorFlow: Large-scale Machine Learning. OSDI.
+
+\end{thebibliography}
+
+\end{document}

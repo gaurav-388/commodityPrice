@@ -1,0 +1,29 @@
+feature,importance
+MSP(per quintol),0.33867422
+CPI(base year2012=100),0.114930525
+variety_encoded,0.09494167
+Food_Subsidy(in thousand crores),0.09361928
+"Per_Capita_Income(per capita nsdp,rs)",0.051688973
+Import(Million MT),0.04425777
+Area(million ha),0.042296126
+Fertilizer_Consumption(kg/ha),0.036638122
+Elec_Agri_Share(%),0.032467246
+Export(Million MT),0.030452551
+district_encoded,0.02761842
+temp_rainfall,0.022557925
+day_of_year,0.020527883
+week_of_year,0.01802014
+market_name_encoded,0.006460242
+Production(million tonnes),0.0061798687
+month,0.005444035
+is_monsoon,0.0031563453
+quarter,0.0028325105
+temperature(celcius),0.0020423357
+Yield(kg/ha),0.0013392842
+production_per_area,0.0010568297
+rainfall(mm),0.0008141403
+day,0.00070782343
+year,0.0006124601
+day_of_week,0.0004897434
+commodity_name_encoded,0.0001735204
+state_name_encoded,0.0
